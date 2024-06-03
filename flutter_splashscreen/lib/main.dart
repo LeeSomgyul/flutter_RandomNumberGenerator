@@ -5,7 +5,17 @@ void main() {
     MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
-        body: Image.asset('asset/img/logo.png'),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'asset/img/logo.png',
+            ),
+            const CircularProgressIndicator(
+              color: Color(0xFF00be6d),
+            ),
+          ],
+        ),
       ),
     ),
   );
