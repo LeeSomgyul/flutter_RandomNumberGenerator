@@ -1,36 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_splashscreen/screen/home_screen.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(
-    const MaterialApp(
+    MaterialApp(
       home: HomeScreen(),
     ),
   );
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 32.0,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'asset/img/logo.png',
-            ),
-            const CircularProgressIndicator(
-              color: Color(0xFF00be6d),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
