@@ -61,6 +61,11 @@ flutter:
 
   assets:
     - asset/img/
+  
+  fonts:
+    - family: cafe24
+      fonts:
+        - asset: asset/font/Cafe24Behappy.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
