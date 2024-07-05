@@ -1,22 +1,42 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_splashscreen/constant/color.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<int> numbers = [
+    123,
+    456,
+    789,
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: primaryColor,
       body: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: const Column(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _top(),
-              _bottom(),
+              const _Header(),
+              _Body(
+                numbers: numbers,
+              ),
+              _Footer(
+                onPressed: () {
+                  setState(() {
+                    numbers = [999, 888, 777];
+                  });
+                },
+              ),
             ],
           ),
         ),
@@ -25,91 +45,83 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _top extends StatefulWidget {
-  const _top({super.key});
-
-  @override
-  State<_top> createState() => _topState();
-}
-
-class _topState extends State<_top> {
-  DateTime selectedDate = DateTime.now();
+class _Header extends StatelessWidget {
+  const _Header({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-
-    return Expanded(
-      child: Container(
-        child: Column(
-          children: [
-            Text(
-              'U&I',
-              style: Theme.of(context).textTheme.displayLarge,
-            ),
-            Text(
-              '우리 처음 만난날',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            Text(
-              '${selectedDate.year}.${selectedDate.month}.${selectedDate.day}',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            IconButton(
-              iconSize: 30,
-              color: Colors.red,
-              onPressed: () {
-                showCupertinoDialog(
-                  barrierDismissible: true,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        color: Colors.white,
-                        height: 300,
-                        child: CupertinoDatePicker(
-                          initialDateTime: selectedDate,
-                          mode: CupertinoDatePickerMode.date,
-                          onDateTimeChanged: (DateTime date) {
-                            setState(() {
-                              selectedDate = date;
-                            });
-                          },
-                          dateOrder: DatePickerDateOrder.ymd,
-                          maximumDate: DateTime.now(),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              icon: const Icon(
-                Icons.favorite,
-              ),
-            ),
-            Text(
-              'D+${now.difference(selectedDate).inDays + 1}',
-              style: Theme.of(context).textTheme.displayMedium,
-            ),
-          ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          '랜덤 숫자 생성기',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.w700,
+          ),
         ),
+        IconButton(
+          color: redColor,
+          onPressed: () {},
+          icon: const Icon(
+            Icons.settings,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Body extends StatelessWidget {
+  final List<int> numbers;
+
+  const _Body({
+    required this.numbers,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: numbers
+            .map((e) => e.toString().split(''))
+            .map((set) => Row(
+                  children: set
+                      .map(
+                        (number) => Image.asset(
+                          'asset/img/$number.png',
+                          width: 50,
+                          height: 70,
+                        ),
+                      )
+                      .toList(),
+                ))
+            .toList(),
       ),
     );
   }
 }
 
-class _bottom extends StatelessWidget {
-  const _bottom({super.key});
+class _Footer extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _Footer({
+    required this.onPressed,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        child: Image.asset(
-          'asset/img/배경화면.png',
-        ),
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: redColor,
+        foregroundColor: Colors.white,
       ),
+      onPressed: onPressed,
+      child: const Text('생성하기'),
     );
   }
 }
