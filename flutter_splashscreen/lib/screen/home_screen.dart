@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_splashscreen/constant/color.dart';
+import 'dart:math';
+
+import 'package:flutter_splashscreen/screen/setting_screen.dart';
+import 'package:flutter_splashscreen/component/number_to_image.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,16 +30,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const _Header(),
+              _Header(
+                onPressed: onSettingIconPressed,
+              ),
               _Body(
                 numbers: numbers,
               ),
               _Footer(
-                onPressed: () {
-                  setState(() {
-                    numbers = [999, 888, 777];
-                  });
-                },
+                onPressed: generateRandomNumber,
               ),
             ],
           ),
@@ -43,10 +45,36 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  onSettingIconPressed() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return const SettingScreen();
+        },
+      ),
+    );
+  }
+
+  generateRandomNumber() {
+    final rand = Random();
+    final Set<int> newNumbers = {};
+
+    while (newNumbers.length < 3) {
+      final randomNumber = rand.nextInt(1000);
+      newNumbers.add(randomNumber);
+    }
+
+    setState(() {
+      numbers = newNumbers.toList();
+    });
+  }
 }
 
 class _Header extends StatelessWidget {
-  const _Header({super.key});
+  final VoidCallback onPressed;
+
+  const _Header({required this.onPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +91,7 @@ class _Header extends StatelessWidget {
         ),
         IconButton(
           color: redColor,
-          onPressed: () {},
+          onPressed: onPressed,
           icon: const Icon(
             Icons.settings,
           ),
@@ -86,20 +114,7 @@ class _Body extends StatelessWidget {
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: numbers
-            .map((e) => e.toString().split(''))
-            .map((set) => Row(
-                  children: set
-                      .map(
-                        (number) => Image.asset(
-                          'asset/img/$number.png',
-                          width: 50,
-                          height: 70,
-                        ),
-                      )
-                      .toList(),
-                ))
-            .toList(),
+        children: numbers.map((e) => NumberToImage(number: e)).toList(),
       ),
     );
   }
