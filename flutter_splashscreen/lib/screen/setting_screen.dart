@@ -4,7 +4,12 @@ import 'package:flutter_splashscreen/constant/color.dart';
 import 'package:flutter_splashscreen/component/number_to_image.dart';
 
 class SettingScreen extends StatefulWidget {
-  const SettingScreen({super.key});
+  final int maxNumber;
+
+  const SettingScreen({
+    required this.maxNumber,
+    super.key,
+  });
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
@@ -12,6 +17,12 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   double maxNumber = 1000;
+
+  @override
+  void initState() {
+    super.initState();
+    maxNumber = widget.maxNumber.toDouble();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +37,28 @@ class _SettingScreenState extends State<SettingScreen> {
               _Number(
                 maxNumber: maxNumber,
               ),
-              const _Slider(),
-              const _Button(),
+              _Slider(
+                value: maxNumber,
+                onChanged: onSliderChanged,
+              ),
+              _Button(
+                onPressed: onSavePressed,
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  onSliderChanged(double value) {
+    setState(() {
+      maxNumber = value;
+    });
+  }
+
+  onSavePressed() {
+    Navigator.of(context).pop(maxNumber.toInt());
   }
 }
 
@@ -55,16 +81,34 @@ class _Number extends StatelessWidget {
 }
 
 class _Slider extends StatelessWidget {
-  const _Slider({super.key});
+  final double value;
+  final ValueChanged<double> onChanged;
+
+  const _Slider({
+    required this.value,
+    required this.onChanged,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Slider(
+      value: value,
+      max: 100000,
+      min: 1000,
+      activeColor: redColor,
+      onChanged: onChanged,
+    );
   }
 }
 
 class _Button extends StatelessWidget {
-  const _Button({super.key});
+  final VoidCallback onPressed;
+
+  const _Button({
+    required this.onPressed,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +117,7 @@ class _Button extends StatelessWidget {
         backgroundColor: redColor,
         foregroundColor: Colors.white,
       ),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
+      onPressed: onPressed,
       child: const Text('저장'),
     );
   }
